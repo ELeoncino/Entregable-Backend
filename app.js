@@ -1,29 +1,31 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const todoRoutes = require("./routes/todoRoutes");
 
 const app = express();
-const PORT = 3000; // Puerto donde el servidor escuchará
+const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(bodyParser.json());
-app.use(cors());
+app.use(express.json()); // Parsear JSON en las solicitudes
+app.use(cors()); // Habilitar CORS
+
+// Registrar las rutas
+app.use(todoRoutes);
 
 // Conexión a MongoDB
 mongoose
-  .connect("mongodb://127.0.0.1:27017/todoDB", {
+  .connect("mongodb://localhost:27017/todo-app", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("Conectado a MongoDB"))
-  .catch((err) => console.error("Error al conectar a MongoDB:", err));
-
-// Rutas
-app.use("/todos", todoRoutes);
-
-// Iniciar el servidor
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+  .then(() => {
+    console.log("Conectado a MongoDB");
+    app.listen(PORT, () =>
+      console.log(`Servidor corriendo en el puerto ${PORT}`)
+    );
+  })
+  .catch((err) => {
+    console.error("Error al conectar a MongoDB:", err.message);
+    process.exit(1);
+  });
