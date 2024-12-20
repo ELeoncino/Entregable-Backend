@@ -5,11 +5,19 @@ const TodoSchema = new mongoose.Schema({
     type: String,
     required: [true, "El nombre de la tarea es obligatorio"],
     trim: true,
+    maxlength: [
+      100,
+      "El nombre de la tarea no puede exceder los 100 caracteres",
+    ],
   },
   description: {
     type: String,
     required: [true, "La descripción de la tarea es obligatoria"],
     trim: true,
+    maxlength: [
+      500,
+      "La descripción de la tarea no puede exceder los 500 caracteres",
+    ],
   },
   creator: {
     type: String,
